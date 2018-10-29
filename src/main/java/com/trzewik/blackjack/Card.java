@@ -14,4 +14,9 @@ public class Card {
     public String toString() {
         return this.sign.name() + " " + this.color.name();
     }
+
+    public int getValue(){
+        return this.sign.getValue();
+    }
+
 }

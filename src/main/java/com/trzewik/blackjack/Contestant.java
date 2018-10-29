@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 public class Contestant {
 
-    ArrayList<Card> hand;
-    int position;
-    boolean buster;
-    int cash;
-    String name;
+    private ArrayList<Card> hand;
+    private int position;
+    private boolean buster;
+    private int cash;
+    private String name;
 
     public Contestant(){
         this.hand = new ArrayList<>();
@@ -21,14 +21,50 @@ public class Contestant {
         this.name = name;
     }
 
+    public String getName(){
+        return this.name;
+    }
+
+    public void setName(String name){
+        this.name = name;
+    }
+
+    public int getCash(){
+        return this.cash;
+    }
+
+    public void setCash(int cash){
+        this.cash = cash;
+    }
+
+    public boolean getBuster(){
+        return this.buster;
+    }
+
+    public void setBuster(boolean buster){
+        this.buster = buster;
+    }
+
+    public int getPosition(){
+        return this.position;
+    }
+
+    public void setPosition(int position){
+        this.position =position;
+    }
+
+    public ArrayList<Card> getHand(){
+        return this.hand;
+    }
+
     public void addCardToHand(Card card){
         this.hand.add(card);
     }
 
     public int countScore(){
         int score = 0;
-//        for(Card card : this.hand) {
-//            card.;
-//        }
+        for(Card card : this.hand) {
+            score += card.getValue();
+        }
     return score;}
 }

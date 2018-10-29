@@ -2,7 +2,7 @@ package com.trzewik.blackjack;
 
 public class Player extends Contestant {
 
-    int betValue;
+    private int betValue;
 
     public Player(){
         this.betValue = 0;
@@ -10,5 +10,13 @@ public class Player extends Contestant {
 
     public Player(String name, int cash){
         super(name, cash);
+    }
+
+    public int getBetValue(){
+        return this.betValue;
+    }
+
+    public void setBetValue(int betValue){
+        this.betValue = betValue;
     }
 }
