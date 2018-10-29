@@ -5,34 +5,30 @@ import java.util.Collections;
 
 public class Deck {
 
-    private ArrayList<String> listOfCards = new ArrayList<>();
+    private ArrayList<Card> listOfCards = new ArrayList<>();
 
-    public void setListOfCards(ArrayList<String> listOfCards) {
-        this.listOfCards = listOfCards;
-    }
-
-    {
+    public Deck(){
         for (Sign s : Sign.values()){
             for (Color c : Color.values()){
-                String card = new Card(s, c).getCard();
+                Card card = new Card(s, c);
                 this.listOfCards.add(card);
             }
         }
         shuffleDeck();
     }
 
-    private ArrayList<String> shuffleDeck(){
+    private ArrayList<Card> shuffleDeck(){
         Collections.shuffle(this.listOfCards);
         return listOfCards;
     }
 
-    public String getCard(){
-        String card = this.listOfCards.get(0);
+    public Card getCard(){
+        Card card = this.listOfCards.get(0);
         deleteCardFromDeck(card);
         return card;
     }
 
-    private void deleteCardFromDeck(String card){
+    private void deleteCardFromDeck(Card card){
         this.listOfCards.remove(card);
     }
 }

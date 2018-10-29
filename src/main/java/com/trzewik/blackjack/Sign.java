@@ -1,7 +1,5 @@
 package com.trzewik.blackjack;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public enum  Sign {
     ACE (1),
@@ -26,12 +24,5 @@ public enum  Sign {
 
     public int getValue(){
         return value;
-    }
-
-    ArrayList<Enum> listOfSings = new ArrayList<>();
-
-    public ArrayList<Enum> getListOfSings(){
-        listOfSings.addAll(Arrays.asList(Sign.values()));
-        return listOfSings;
     }
 }

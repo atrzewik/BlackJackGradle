@@ -2,16 +2,16 @@ package com.trzewik.blackjack;
 
 public class Card {
 
-    private Enum sign;
+    private Sign sign;
+    private Color color;
 
-    private final Enum color;
-
-    Card(Enum sign, Enum color){
+    Card(Sign sign, Color color){
         this.sign = sign;
         this.color = color;
     }
 
-    public String getCard(){
+    @Override
+    public String toString() {
         return this.sign.name() + " " + this.color.name();
     }
 }
