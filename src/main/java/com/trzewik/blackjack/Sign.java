@@ -23,6 +23,6 @@ public enum  Sign {
     }
 
     public int getValue(){
-        return value;
+        return this.value;
     }
 }

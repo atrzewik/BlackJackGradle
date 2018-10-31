@@ -61,10 +61,22 @@ public class Contestant {
         this.hand.add(card);
     }
 
-    public int countScore(){
+    private boolean aceInHand(){
+        ArrayList<Sign> listOfSigns = new ArrayList<>();
+        for (Card card : this.hand){
+            listOfSigns.add(card.getSign());
+        }
+        return listOfSigns.contains(Sign.ACE);
+    }
+
+    public int countScore() {
         int score = 0;
-        for(Card card : this.hand) {
+        for (Card card : this.hand) {
             score += card.getValue();
         }
-    return score;}
+        if (this.aceInHand() & score <= 11){
+            score += 10;
+        }
+        return score;
+    }
 }

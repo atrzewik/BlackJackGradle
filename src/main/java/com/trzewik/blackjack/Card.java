@@ -19,4 +19,8 @@ public class Card {
         return this.sign.getValue();
     }
 
+    public Sign getSign(){
+        return this.sign;
+    }
+
 }
