@@ -1,4 +1,6 @@
-package com.trzewik.blackjack;
+package com.trzewik.blackjack.players;
+
+import com.trzewik.blackjack.MoveType;
 
 public class Player extends Contestant {
 
@@ -41,4 +43,6 @@ public class Player extends Contestant {
     public void doubleBetValue(){
         this.betValue *= 2;
     }
+
+
 }

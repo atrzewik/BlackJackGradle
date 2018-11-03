@@ -1,4 +1,7 @@
-package com.trzewik.blackjack;
+package com.trzewik.blackjack.deck;
+
+import com.trzewik.blackjack.deck.enums.Color;
+import com.trzewik.blackjack.deck.enums.Sign;
 
 import java.util.ArrayList;
 import java.util.Collections;

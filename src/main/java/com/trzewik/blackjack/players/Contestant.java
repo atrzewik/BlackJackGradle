@@ -1,22 +1,26 @@
-package com.trzewik.blackjack;
+package com.trzewik.blackjack.players;
+
+import com.trzewik.blackjack.deck.Card;
+import com.trzewik.blackjack.deck.enums.Sign;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class Contestant {
+public abstract class Contestant {
 
-    private ArrayList<Card> hand;
+    private List<Card> hand;
     private int position;
     private boolean buster;
     private int cash;
     private String name;
 
-    public Contestant(){
+    protected Contestant(){
         this.hand = new ArrayList<>();
         this.position = 0;
         this.buster = false;
     }
 
-    public Contestant(String name, int cash){
+    protected Contestant(String name, int cash){
         this.cash = cash;
         this.name = name;
     }
@@ -53,7 +57,7 @@ public class Contestant {
         this.position =position;
     }
 
-    public ArrayList<Card> getHand(){
+    public List<Card> getHand(){
         return this.hand;
     }
 

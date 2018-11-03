@@ -1,72 +1,93 @@
 package com.trzewik.userinputprovider;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class UserInputProvider {
 
-    private void printErrorMessage(String errorMessage){
-        System.err.println(errorMessage);
+    private static void printErrorMessage(String errorMessage, String format, String secondFormat){
+        System.err.printf(errorMessage, format, secondFormat);
+    }
+    private static void printMessage(String message, String format){
+        System.out.printf(message, format);
     }
 
-    private Scanner getMessage(String message){
+    private static Scanner getMessage(String message, String format){
         Scanner userInput = new Scanner(System.in);
-        System.out.println(message);
+        printMessage(message, format);
         return userInput;
     }
 
-    public String collectStringInputFromUser(String message){
+    public static String collectString(String message, String format){
         while (true) {
             try {
-                Scanner userInput = getMessage(message);
+                Scanner userInput = getMessage(message, format);
                 return userInput.nextLine();
             } catch (Exception e) {
-                printErrorMessage("Input must be a string! Try again: ");
+                printErrorMessage("Input must be a string! Try again: ", "","");
             }
         }
     }
 
-    public Integer collectIntegerInputFromUser(String message) {
+    public static Integer collectInteger(String message, String format) {
         while (true) {
             try {
-                Scanner userInput = getMessage(message);
+                Scanner userInput = getMessage(message, format);
                 return userInput.nextInt();
             } catch (Exception e) {
-                printErrorMessage("Input must be an integer! Try again: ");
+                printErrorMessage("Input must be an integer! Try again: ", "","");
             }
         }
     }
 
-    public String collectProperStringFromUser(ArrayList<String> listOfStrings, String message){
-        String userInput = this.collectStringInputFromUser(message);
-        if (listOfStrings.contains(userInput)){
-            return userInput;
-        }
-        else {
-            System.err.printf("You must input string: %s! Please try again: ", listOfStrings);
-            return collectProperStringFromUser(listOfStrings, message);
-        }
-    }
-
-    public Integer collectIntegerInRangeMinFromUser(Integer minimum, String message){
-        Integer userInput = this.collectIntegerInputFromUser(message);
-        if (minimum <= userInput){
-            return userInput;
-        }
-        else {
-            System.err.printf("You must input value in range bigger than: %s ! Please try again: ", minimum);
-            return collectIntegerInRangeMinFromUser(minimum, message);
+    public static String collectProperString(List<String> listOfStrings, String message, String format) {
+        while (true) {
+            try {
+                String userInput = collectString(message, format);
+                if (listOfStrings.contains(userInput)) {
+                    return userInput;
+                }
+                throw new IllegalArgumentException();
+            } catch (Exception e) {
+                printErrorMessage("You must input string: %s! Please try again: ", listOfStrings.toString(), "");
+            }
         }
     }
 
-    public Integer collectIntegerInRangeMinMaxFromUser(Integer minimum, Integer maximum, String message){
-        Integer userInput = this.collectIntegerInputFromUser(message);
-        if (minimum <= userInput & userInput <= maximum){
-            return userInput;
+    public static Integer collectIntegerInRangeMin(Integer minimum, String message, String format){
+            while (true) {
+                try {
+                    Integer userInput = collectInteger(message, format);
+                    if (userInput >= minimum) {
+                        return userInput;
+                    }
+                    throw new ArithmeticException();
+                } catch (Exception e) {
+                    printErrorMessage("You must input value in range bigger than: %s ! Please try again: ", minimum.toString(), "");
+                }
+            }
         }
-        else {
-            System.err.printf("You must input value in range: %s - %s! Please try again: ", minimum, maximum);
-            return collectIntegerInRangeMinMaxFromUser(minimum, maximum, message);
+
+    public static Integer collectIntegerInRangeMinMax(Integer minimum, Integer maximum, String message, String format){
+        while (true){
+            try {
+                Integer userInput = collectInteger(message,format);
+                if (userInput >= minimum && userInput <= maximum){
+                    return userInput;
+                }
+                throw new  ArithmeticException();
+            }
+            catch (Exception e){
+                printErrorMessage("You must input value in range: %s - %s! Please try again: ", minimum.toString(), maximum.toString());
+            }
         }
+    }
+
+    public static void main(String[] args){
+        List<String> a = new ArrayList<>();
+        a.add("as");
+        a.add("bis");
+        System.out.println(collectProperString(a,"Give me %s","as or bis"));
     }
 }

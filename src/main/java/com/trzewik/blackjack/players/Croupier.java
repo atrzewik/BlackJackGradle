@@ -1,4 +1,6 @@
-package com.trzewik.blackjack;
+package com.trzewik.blackjack.players;
+
+import com.trzewik.blackjack.deck.Card;
 
 public class Croupier extends Contestant {
 
