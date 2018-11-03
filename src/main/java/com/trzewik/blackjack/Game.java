@@ -21,7 +21,6 @@ public class Game {
         this.numberOfPlayers = numberOfPlayers;
         this.deck = new Deck();
         this.croupier = new Croupier();
-//        this.player = new Player();
         this.players = new ArrayList<>();
         this.createPlayers();
         this.dealCards();
