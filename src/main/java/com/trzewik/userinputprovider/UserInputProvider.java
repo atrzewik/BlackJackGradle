@@ -1,23 +1,10 @@
 package com.trzewik.userinputprovider;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class UserInputProvider {
 
-    private static void printErrorMessage(String errorMessage, String format, String secondFormat){
-        System.err.printf(errorMessage, format, secondFormat);
-    }
-    private static void printMessage(String message, String format){
-        System.out.printf(message, format);
-    }
-
-    private static Scanner getMessage(String message, String format){
-        Scanner userInput = new Scanner(System.in);
-        printMessage(message, format);
-        return userInput;
-    }
 
     public static String collectString(String message, String format){
         while (true) {
@@ -84,10 +71,17 @@ public class UserInputProvider {
         }
     }
 
-    public static void main(String[] args){
-        List<String> a = new ArrayList<>();
-        a.add("as");
-        a.add("bis");
-        System.out.println(collectProperString(a,"Give me %s","as or bis"));
+    private static void printErrorMessage(String errorMessage, String format, String secondFormat){
+        System.err.printf(errorMessage, format, secondFormat);
+    }
+
+    private static void printMessage(String message, String format){
+        System.out.printf(message, format);
+    }
+
+    private static Scanner getMessage(String message, String format){
+        Scanner userInput = new Scanner(System.in);
+        printMessage(message, format);
+        return userInput;
     }
 }

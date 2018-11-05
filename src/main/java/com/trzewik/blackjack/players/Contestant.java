@@ -9,18 +9,17 @@ import java.util.List;
 public abstract class Contestant {
 
     private List<Card> hand;
-    private int position;
+    private Integer position;
     private boolean buster;
     private int cash;
     private String name;
 
-    protected Contestant(){
+    public Contestant(){
         this.hand = new ArrayList<>();
-        this.position = 0;
         this.buster = false;
     }
 
-    protected Contestant(String name, int cash){
+    public Contestant(String name, int cash){
         this.cash = cash;
         this.name = name;
     }
