@@ -56,11 +56,11 @@ public class Game {
         }
     }
 
-    private String getUserChoice(Player player){
-        if (player.getCash() >= player.getBetValue() && player.getLastMove() == MoveType.NONE){
-            return UserInputProvider.collectProperString(new ArrayList<>(Arrays.asList(MoveType.STAND.getExpectedPlayerChoice(), MoveType.STAND.getExpectedPlayerChoice().toUpperCase(), MoveType.HIT.getExpectedPlayerChoice(), MoveType.HIT.getExpectedPlayerChoice().toUpperCase(), MoveType.DOUBLEDOWN.getExpectedPlayerChoice(), MoveType.DOUBLEDOWN.getExpectedPlayerChoice().toUpperCase())), MessageProvider.askPlayerForHitStandDouble, player.getName());
+    private MoveType getUserChoice(Player player){
+        if (player.getCash() >= player.getBetValue() && player.getLastMove() == null){
+            return UserInputProvider.collectProperMoveType(new ArrayList<>(Arrays.asList(MoveType.STAND, MoveType.HIT, MoveType.DOUBLEDOWN)), new ArrayList<>(Arrays.asList(MoveType.STAND.getExpectedPlayerChoice(), MoveType.STAND.getExpectedPlayerChoice().toUpperCase(), MoveType.HIT.getExpectedPlayerChoice(), MoveType.HIT.getExpectedPlayerChoice().toUpperCase(), MoveType.DOUBLEDOWN.getExpectedPlayerChoice(), MoveType.DOUBLEDOWN.getExpectedPlayerChoice().toUpperCase())), MessageProvider.askPlayerForHitStandDouble, player.getName());
         }
-        else {return UserInputProvider.collectProperString(new ArrayList<>(Arrays.asList(MoveType.STAND.getExpectedPlayerChoice(), MoveType.STAND.getExpectedPlayerChoice().toUpperCase(), MoveType.HIT.getExpectedPlayerChoice(), MoveType.HIT.getExpectedPlayerChoice().toUpperCase())),MessageProvider.getAskPlayerForHitStand, player.getName());
+        else {return UserInputProvider.collectProperMoveType(new ArrayList<>(Arrays.asList(MoveType.STAND, MoveType.HIT)), new ArrayList<>(Arrays.asList(MoveType.STAND.getExpectedPlayerChoice(), MoveType.STAND.getExpectedPlayerChoice().toUpperCase(), MoveType.HIT.getExpectedPlayerChoice(), MoveType.HIT.getExpectedPlayerChoice().toUpperCase())), MessageProvider.getAskPlayerForHitStand, player.getName());
         }
     }
 
@@ -90,7 +90,7 @@ public class Game {
     private boolean anyPlayerHaveMove(){
         boolean somePlayerHaveMove = false;
         for (Player player: this.players){
-            if (player.getLastMove() == MoveType.HIT || player.getLastMove() == MoveType.NONE){
+            if (player.getLastMove() == MoveType.HIT || player.getLastMove() == null){
                 somePlayerHaveMove = true;
             }
         }
@@ -105,7 +105,7 @@ public class Game {
                 }
                 if (player.getLastMove() != MoveType.STAND && player.getLastMove() != MoveType.DOUBLEDOWN){
                     MessagePrinter.printMessage(MessageProvider.tellPlayerHandPoints, player.getName(), player.getHand().toString(), String.valueOf(player.countScore()));
-                    MoveType choice = MoveType.matchMove(this.getUserChoice(player));
+                    MoveType choice = this.getUserChoice(player);
                     player.setLastMove(choice);
                     this.gameAction(choice, player);
                 }

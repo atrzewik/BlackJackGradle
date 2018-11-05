@@ -1,6 +1,7 @@
 package com.trzewik.userinputprovider;
 
 import com.trzewik.blackjack.MessagePrinter;
+import com.trzewik.blackjack.MoveType;
 
 import java.util.List;
 import java.util.Scanner;
@@ -45,6 +46,21 @@ public class UserInputProvider {
         }
     }
 
+
+    public static MoveType collectProperMoveType(List<MoveType> listOfEnums, List<String> listOfString, String message, String ... formats){
+        while (true) {
+            try {
+                MoveType enumUserInput = collectMoveType(listOfString,message,formats);
+                if (listOfEnums.contains(enumUserInput)) {
+                    return  enumUserInput;
+                }
+                throw new IllegalArgumentException();
+            } catch (Exception e) {
+                MessagePrinter.printErrorMessage("You must input string: %s! Please try again: ", listOfString.toString());
+            }
+        }
+    }
+
     public static Integer collectIntegerInRangeMin(Integer minimum, String message, String ... formats){
             while (true) {
                 try {
@@ -78,5 +94,16 @@ public class UserInputProvider {
         Scanner userInput = new Scanner(System.in);
         MessagePrinter.printMessage(message, formats);
         return userInput;
+    }
+
+    private static MoveType collectMoveType(List<String> listOfString, String message, String ... formats) {
+        while (true) {
+            try {
+                String userInput = collectString(message, formats);
+                return MoveType.matchMove(userInput);
+            } catch (Exception e) {
+                MessagePrinter.printErrorMessage("You must input string: %s! Please try again: ", listOfString.toString());
+            }
+        }
     }
 }

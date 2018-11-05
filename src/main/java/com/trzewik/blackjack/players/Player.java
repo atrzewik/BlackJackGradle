@@ -8,8 +8,6 @@ public class Player extends Contestant {
     private MoveType lastMove;
 
     public Player(){
-        this.betValue = 0;
-        this.lastMove = MoveType.NONE;
     }
 
     public Player(String name, int cash){

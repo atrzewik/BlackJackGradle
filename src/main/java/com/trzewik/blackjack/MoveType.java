@@ -2,7 +2,6 @@ package com.trzewik.blackjack;
 
 
 public enum MoveType {
-    NONE ("n"),
     STAND ("st"),
     HIT ("h"),
     DOUBLEDOWN("dd");
