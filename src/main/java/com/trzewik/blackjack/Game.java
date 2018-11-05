@@ -12,7 +12,6 @@ public class Game {
 
     private List<Player> players;
     private Croupier croupier;
-    private Player player;
     private Deck deck;
     private List<Contestant> contestants;
 
@@ -31,7 +30,7 @@ public class Game {
 
     private void createPlayers(int numberOfPlayers){
         for (int i=0; i<numberOfPlayers; i++){
-            player = new Player();
+            Player player = new Player();
             player.setName(UserInputProvider.collectString(MessageProvider.collectName, ""));
             player.setCash(UserInputProvider.collectIntegerInRangeMin(1, MessageProvider.collectCash, player.getName()));
             this.players.add(player);
