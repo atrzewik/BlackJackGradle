@@ -1,8 +1,10 @@
 package com.trzewik.userinputprovider;
 
+import com.trzewik.blackjack.MessagePrinter;
+
 import java.util.List;
 import java.util.Scanner;
-import java.util.MissingFormatArgumentException;
+
 
 public class UserInputProvider {
 
@@ -13,7 +15,7 @@ public class UserInputProvider {
                 Scanner userInput = getMessage(message, formats);
                 return userInput.nextLine();
             } catch (Exception e) {
-                printErrorMessage("Input must be a string! Try again: ");
+                MessagePrinter.printErrorMessage("Input must be a string! Try again: ");
             }
         }
     }
@@ -24,7 +26,7 @@ public class UserInputProvider {
                 Scanner userInput = getMessage(message, formats);
                 return userInput.nextInt();
             } catch (Exception e) {
-                printErrorMessage("Input must be an integer! Try again: ");
+                MessagePrinter.printErrorMessage("Input must be an integer! Try again: ");
             }
         }
     }
@@ -38,7 +40,7 @@ public class UserInputProvider {
                 }
                 throw new IllegalArgumentException();
             } catch (Exception e) {
-                printErrorMessage("You must input string: %s! Please try again: ", listOfStrings.toString());
+                MessagePrinter.printErrorMessage("You must input string: %s! Please try again: ", listOfStrings.toString());
             }
         }
     }
@@ -52,7 +54,7 @@ public class UserInputProvider {
                     }
                     throw new ArithmeticException();
                 } catch (Exception e) {
-                    printErrorMessage("You must input value in range bigger than: %s ! Please try again: ", minimum.toString());
+                    MessagePrinter.printErrorMessage("You must input value in range bigger than: %s ! Please try again: ", minimum.toString());
                 }
             }
         }
@@ -67,34 +69,14 @@ public class UserInputProvider {
                 throw new  ArithmeticException();
             }
             catch (Exception e){
-                printErrorMessage("You must input value in range: %s - %s! Please try again: ", minimum.toString(), maximum.toString());
+                MessagePrinter.printErrorMessage("You must input value in range: %s - %s! Please try again: ", minimum.toString(), maximum.toString());
             }
-        }
-    }
-
-    private static void printErrorMessage(String errorMessage, String ... formats){
-        try {
-        System.err.println(String.format(errorMessage, formats));
-        }
-        catch (MissingFormatArgumentException ex){
-            throw new MissingFormatArgumentException(missingFormatArgument);
-        }
-    }
-
-    private static void printMessage(String message, String ... formats){
-        try {
-        System.out.println(String.format(message, formats));
-        }
-        catch (MissingFormatArgumentException ex){
-            throw new MissingFormatArgumentException(missingFormatArgument);
         }
     }
 
     private static Scanner getMessage(String message, String ... formats){
         Scanner userInput = new Scanner(System.in);
-        printMessage(message, formats);
+        MessagePrinter.printMessage(message, formats);
         return userInput;
     }
-
-    private static String missingFormatArgument = "You specified too less format arguments!";
 }

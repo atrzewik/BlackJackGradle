@@ -3,7 +3,6 @@ package com.trzewik.blackjack;
 import java.util.*;
 
 import com.trzewik.blackjack.deck.Deck;
-import com.trzewik.blackjack.players.Contestant;
 import com.trzewik.blackjack.players.Croupier;
 import com.trzewik.blackjack.players.Player;
 import com.trzewik.userinputprovider.UserInputProvider;
@@ -113,50 +112,4 @@ public class Game {
             }
         }
     }
-//
-//    private List<Contestant> createContestants(){
-//        List<Contestant> contestants = new ArrayList<>();
-//        contestants.addAll(this.players);
-//        contestants.add(croupier);
-//        return contestants;
-//    }
-//
-//    private List<Integer> createListOfScores(){
-//        List<Integer> scores = new ArrayList<>();
-//        for (Contestant c: contestants){
-//            scores.add(c.countScore());
-//        }
-//        return scores;
-//    }
-//
-//    private void setPlayersPosition(){
-//        List<Integer> scores = this.createListOfScores();
-//        int position = this.numberOfPlayers+1;
-//        while (scores.size()>0){
-//            for (int i=0; i<=this.numberOfPlayers; i++){
-//                int maximumScore = Collections.max(scores);
-//                Contestant currentContestant = contestants.get(i);
-//                if (currentContestant.countScore() == maximumScore){
-//                    currentContestant.setPosition(position);
-//                    position --;
-//                    scores.remove(maximumScore);
-//                    if (currentContestant.countScore() > 21){
-//                        currentContestant.setBuster(true);
-//                    }
-//                }
-//
-//            }
-//
-//        }
-//    }
-//
-//
-//    private List<Integer> contestantsNames(){
-//        List<Integer> names = new ArrayList<>();
-//        for (Contestant c: this.createContestants()){
-//            names.add(c.getPosition());
-//        }
-//        return names;
-//    }
-
 }
