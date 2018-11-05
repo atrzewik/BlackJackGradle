@@ -1,5 +1,6 @@
 package com.trzewik.blackjack;
 
+
 public class MessageProvider {
 
     public static String collectName = "Please enter player name: ";
@@ -19,18 +20,5 @@ public class MessageProvider {
     public static String getAskPlayerForHitStand = "%s, please enter h for hit or st for stand: ";
 
     public static String getTellPlayerHandPointsBet = "You have %s, %s points and your bet value now is equal: %s ";
-
-
-    public static void printMessage(String message){
-        System.out.println(message);
-    }
-
-    public static void printMessageWithTwoFormat(String message, String format, String secondFormat){
-        System.out.printf(message, format, secondFormat);
-    }
-
-    public static void printMessageWithThreeFormat(String message, String format, String secondFormat, String thirdFormat){
-        System.out.printf(message, format, secondFormat, thirdFormat);
-    }
 
 }

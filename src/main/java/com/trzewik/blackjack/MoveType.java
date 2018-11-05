@@ -7,19 +7,18 @@ public enum MoveType {
     HIT ("h"),
     DOUBLEDOWN("dd");
 
-    private final String value;
+    private final String expectedPlayerChoice;
 
-    MoveType(String value){this.value = value;}
+    MoveType(String value){this.expectedPlayerChoice = value;}
 
-    public String getValue(){return this.value;}
+    public String getExpectedPlayerChoice(){return this.expectedPlayerChoice;}
 
-    public static MoveType matchMove(String playerMove){
-        MoveType lastMove = NONE;
+    public static MoveType matchMove(String playerChoice){
         for (MoveType moveType: MoveType.values()){
-            if (moveType.getValue().equals(playerMove)){
-                lastMove = moveType;
+            if (moveType.getExpectedPlayerChoice().equals((playerChoice).toLowerCase())){
+                return moveType;
             }
         }
-        return lastMove;
+        throw new IllegalArgumentException("You specified wrong playerChoice!");
     }
 }
