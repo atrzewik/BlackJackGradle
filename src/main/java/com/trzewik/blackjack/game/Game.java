@@ -106,7 +106,7 @@ public class Game {
                 if (player.getHand().size() >= 11){
                     player.setLastMove(MoveType.STAND);
                 }
-                if (player.getLastMove() != MoveType.STAND && player.getLastMove() != MoveType.DOUBLE_DOWN){
+                if (player.getLastMove() == MoveType.HIT || player.getLastMove() == null){
                     MessagePrinter.printMessage(MessageProvider.tellPlayerHandPoints, player.getName(), player.getHand().toString(), String.valueOf(player.countScore()));
                     MoveType choice = this.getUserChoice(player);
                     player.setLastMove(choice);
