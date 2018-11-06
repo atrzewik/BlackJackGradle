@@ -2,21 +2,22 @@ package com.trzewik.userinputprovider;
 
 import com.trzewik.blackjack.deck.enums.MoveType;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static com.trzewik.userinputprovider.UserInputProvider.collectString;
 
 public class UserInputMatcher {
 
-    public static MoveType collectProperMoveType(List<MoveType> moveTypes, String message, String ... formats){
+    public static MoveType collectProperMoveType(MoveType[] expectedMoveTypes, String message, String ... formats){
         while (true) {
             try {
-                MoveType enumUserInput = collectMoveType(message,formats);
-                if (moveTypes.contains(enumUserInput)) {
-                    return  enumUserInput;
+                MoveType moveType = collectMoveType(message,formats);
+                if (Arrays.asList(expectedMoveTypes).contains(moveType)) {
+                    return  moveType;
                 }
                 throw new IllegalArgumentException();
-            } catch (Exception e) {
+            } catch (IllegalArgumentException e) {
                 MessagePrinter.printErrorMessage("You put wrong MoveType");
             }
         }
@@ -27,7 +28,7 @@ public class UserInputMatcher {
             try {
                 String userInput = collectString(message, formats);
                 return MoveType.matchMove(userInput);
-            } catch (Exception e) {
+            } catch (IllegalArgumentException e) {
                 MessagePrinter.printErrorMessage("You put wrong MoveType");
             }
         }
