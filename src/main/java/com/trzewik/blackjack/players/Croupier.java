@@ -6,10 +6,9 @@ public class Croupier extends Contestant {
 
     private int casino;
 
+
     public Croupier(){
-        super.setName("Croupier");
-        super.setCash(0);
-        this.casino = 0;
+        super("Croupier", 0);
     }
 
     public int getCasino(){

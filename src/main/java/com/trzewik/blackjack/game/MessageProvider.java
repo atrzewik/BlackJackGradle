@@ -1,4 +1,4 @@
-package com.trzewik.blackjack;
+package com.trzewik.blackjack.game;
 
 
 public class MessageProvider {

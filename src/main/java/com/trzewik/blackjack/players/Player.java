@@ -1,14 +1,11 @@
 package com.trzewik.blackjack.players;
 
-import com.trzewik.blackjack.MoveType;
+import com.trzewik.blackjack.deck.enums.MoveType;
 
 public class Player extends Contestant {
 
     private int betValue;
     private MoveType lastMove;
-
-    public Player(){
-    }
 
     public Player(String name, int cash){
         super(name, cash);

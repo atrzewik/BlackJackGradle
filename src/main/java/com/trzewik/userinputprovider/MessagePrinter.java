@@ -1,4 +1,4 @@
-package com.trzewik.blackjack;
+package com.trzewik.userinputprovider;
 
 import java.util.MissingFormatArgumentException;
 

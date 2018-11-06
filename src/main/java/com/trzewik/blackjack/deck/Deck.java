@@ -8,30 +8,30 @@ import java.util.Collections;
 
 public class Deck {
 
-    private ArrayList<Card> listOfCards = new ArrayList<>();
+    private ArrayList<Card> Cards = new ArrayList<>();
 
     public Deck(){
         for (Sign s : Sign.values()){
             for (Color c : Color.values()){
                 Card card = new Card(s, c);
-                this.listOfCards.add(card);
+                this.Cards.add(card);
             }
         }
         shuffleDeck();
     }
 
     private ArrayList<Card> shuffleDeck(){
-        Collections.shuffle(this.listOfCards);
-        return listOfCards;
+        Collections.shuffle(this.Cards);
+        return Cards;
     }
 
     public Card getCard(){
-        Card card = this.listOfCards.get(0);
+        Card card = this.Cards.get(0);
         deleteCardFromDeck(card);
         return card;
     }
 
     private void deleteCardFromDeck(Card card){
-        this.listOfCards.remove(card);
+        this.Cards.remove(card);
     }
 }

@@ -1,10 +1,13 @@
-package com.trzewik.blackjack;
+package com.trzewik.blackjack.game;
 
 import java.util.*;
 
 import com.trzewik.blackjack.deck.Deck;
+import com.trzewik.blackjack.deck.enums.MoveType;
 import com.trzewik.blackjack.players.Croupier;
 import com.trzewik.blackjack.players.Player;
+import com.trzewik.userinputprovider.MessagePrinter;
+import com.trzewik.userinputprovider.UserInputMatcher;
 import com.trzewik.userinputprovider.UserInputProvider;
 
 public class Game {
@@ -13,7 +16,7 @@ public class Game {
     private Croupier croupier;
     private Deck deck;
 
-    Game(int numberOfPlayers){
+    public Game(int numberOfPlayers){
         this.deck = new Deck();
         this.croupier = new Croupier();
         this.players = new ArrayList<>();
@@ -28,9 +31,9 @@ public class Game {
 
     private void createPlayers(int numberOfPlayers){
         for (int i=0; i<numberOfPlayers; i++){
-            Player player = new Player();
-            player.setName(UserInputProvider.collectString(MessageProvider.collectName));
-            player.setCash(UserInputProvider.collectIntegerInRangeMin(1, MessageProvider.collectCash, player.getName()));
+            String name = UserInputProvider.collectString(MessageProvider.collectName);
+            int cash = UserInputProvider.collectIntegerInRangeMin(1, MessageProvider.collectCash, name);
+            Player player = new Player(name, cash);
             this.players.add(player);
         }
     }
@@ -58,9 +61,9 @@ public class Game {
 
     private MoveType getUserChoice(Player player){
         if (player.getCash() >= player.getBetValue() && player.getLastMove() == null){
-            return UserInputProvider.collectProperMoveType(new ArrayList<>(Arrays.asList(MoveType.STAND, MoveType.HIT, MoveType.DOUBLEDOWN)), new ArrayList<>(Arrays.asList(MoveType.STAND.getExpectedPlayerChoice(), MoveType.STAND.getExpectedPlayerChoice().toUpperCase(), MoveType.HIT.getExpectedPlayerChoice(), MoveType.HIT.getExpectedPlayerChoice().toUpperCase(), MoveType.DOUBLEDOWN.getExpectedPlayerChoice(), MoveType.DOUBLEDOWN.getExpectedPlayerChoice().toUpperCase())), MessageProvider.askPlayerForHitStandDouble, player.getName());
+            return UserInputMatcher.collectProperMoveType(new ArrayList<>(Arrays.asList(MoveType.STAND, MoveType.HIT, MoveType.DOUBLE_DOWN)), MessageProvider.askPlayerForHitStandDouble, player.getName());
         }
-        else {return UserInputProvider.collectProperMoveType(new ArrayList<>(Arrays.asList(MoveType.STAND, MoveType.HIT)), new ArrayList<>(Arrays.asList(MoveType.STAND.getExpectedPlayerChoice(), MoveType.STAND.getExpectedPlayerChoice().toUpperCase(), MoveType.HIT.getExpectedPlayerChoice(), MoveType.HIT.getExpectedPlayerChoice().toUpperCase())), MessageProvider.getAskPlayerForHitStand, player.getName());
+        else {return UserInputMatcher.collectProperMoveType(new ArrayList<>(Arrays.asList(MoveType.STAND, MoveType.HIT)), MessageProvider.getAskPlayerForHitStand, player.getName());
         }
     }
 
@@ -69,10 +72,10 @@ public class Game {
             case HIT:
                 player.addCardToHand(deck.getCard());
                 break;
-            case DOUBLEDOWN:
+            case DOUBLE_DOWN:
                 player.addCardToHand(deck.getCard());
                 croupier.getMoneyFromPlayerIfDoubleDown(player);
-                player.setLastMove(MoveType.DOUBLEDOWN);
+                player.setLastMove(MoveType.DOUBLE_DOWN);
                 MessagePrinter.printMessage(MessageProvider.getTellPlayerHandPointsBet, player.getHand().toString(), String.valueOf(player.countScore()), String.valueOf(player.getBetValue()));
                 break;
             default:
@@ -103,7 +106,7 @@ public class Game {
                 if (player.getHand().size() >= 11){
                     player.setLastMove(MoveType.STAND);
                 }
-                if (player.getLastMove() != MoveType.STAND && player.getLastMove() != MoveType.DOUBLEDOWN){
+                if (player.getLastMove() != MoveType.STAND && player.getLastMove() != MoveType.DOUBLE_DOWN){
                     MessagePrinter.printMessage(MessageProvider.tellPlayerHandPoints, player.getName(), player.getHand().toString(), String.valueOf(player.countScore()));
                     MoveType choice = this.getUserChoice(player);
                     player.setLastMove(choice);

@@ -10,18 +10,14 @@ public abstract class Contestant {
 
     private List<Card> hand;
     private Integer position;
-    private boolean buster;
+    private Boolean buster;
     private int cash;
     private String name;
-
-    public Contestant(){
-        this.hand = new ArrayList<>();
-        this.buster = false;
-    }
 
     public Contestant(String name, int cash){
         this.cash = cash;
         this.name = name;
+        this.hand = new ArrayList<>();
     }
 
     public String getName(){
@@ -38,22 +34,6 @@ public abstract class Contestant {
 
     public void setCash(int cash){
         this.cash = cash;
-    }
-
-    public boolean getBuster(){
-        return this.buster;
-    }
-
-    public void setBuster(boolean buster){
-        this.buster = buster;
-    }
-
-    public int getPosition(){
-        return this.position;
-    }
-
-    public void setPosition(int position){
-        this.position =position;
     }
 
     public List<Card> getHand(){
