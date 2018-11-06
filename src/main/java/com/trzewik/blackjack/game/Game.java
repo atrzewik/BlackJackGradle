@@ -61,9 +61,9 @@ public class Game {
 
     private MoveType getUserChoice(Player player){
         if (player.getCash() >= player.getBetValue() && player.getLastMove() == null){
-            return UserInputMatcher.collectProperMoveType(new ArrayList<>(Arrays.asList(MoveType.values())), MessageProvider.askPlayerForHitStandDouble, player.getName());
+            return UserInputMatcher.collectProperMoveType(MoveType.values(), MessageProvider.askPlayerForHitStandDouble, player.getName());
         }
-        else {return UserInputMatcher.collectProperMoveType(new ArrayList<>(Arrays.asList(MoveType.getHitStand())), MessageProvider.getAskPlayerForHitStand, player.getName());
+        else {return UserInputMatcher.collectProperMoveType(MoveType.getHitStand(), MessageProvider.getAskPlayerForHitStand, player.getName());
         }
     }
 
