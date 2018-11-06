@@ -29,16 +29,16 @@ public class UserInputProvider {
         }
     }
 
-    public static String collectProperString(List<String> strings, String message, String ... formats) {
+    public static String collectProperString(List<String> expectedStrings, String message, String ... formats) {
         while (true) {
             try {
                 String userInput = collectString(message, formats);
-                if (strings.contains(userInput)) {
+                if (expectedStrings.contains(userInput)) {
                     return userInput;
                 }
                 throw new IllegalArgumentException();
             } catch (IllegalArgumentException e) {
-                MessagePrinter.printErrorMessage("You must input string: %s! Please try again: ", strings.toString());
+                MessagePrinter.printErrorMessage("You must input string: %s! Please try again: ", expectedStrings.toString());
             }
         }
     }
