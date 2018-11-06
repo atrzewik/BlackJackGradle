@@ -18,4 +18,8 @@ public enum MoveType {
         }
         throw new IllegalArgumentException("You specified wrong playerChoice!");
     }
+
+    public static MoveType[] getHitStand(){
+        return new MoveType[]{HIT, STAND};
+    }
 }

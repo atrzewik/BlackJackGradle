@@ -8,15 +8,15 @@ import static com.trzewik.userinputprovider.UserInputProvider.collectString;
 
 public class UserInputMatcher {
 
-    public static MoveType collectProperMoveType(List<MoveType> moveTypes, String message, String ... formats){
+    public static MoveType collectProperMoveType(List<MoveType> expectedMoveTypes, String message, String ... formats){
         while (true) {
             try {
-                MoveType enumUserInput = collectMoveType(message,formats);
-                if (moveTypes.contains(enumUserInput)) {
-                    return  enumUserInput;
+                MoveType moveType = collectMoveType(message,formats);
+                if (expectedMoveTypes.contains(moveType)) {
+                    return  moveType;
                 }
                 throw new IllegalArgumentException();
-            } catch (Exception e) {
+            } catch (IllegalArgumentException e) {
                 MessagePrinter.printErrorMessage("You put wrong MoveType");
             }
         }
@@ -27,7 +27,7 @@ public class UserInputMatcher {
             try {
                 String userInput = collectString(message, formats);
                 return MoveType.matchMove(userInput);
-            } catch (Exception e) {
+            } catch (IllegalArgumentException e) {
                 MessagePrinter.printErrorMessage("You put wrong MoveType");
             }
         }
