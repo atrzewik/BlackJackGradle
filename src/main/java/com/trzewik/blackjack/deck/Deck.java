@@ -5,12 +5,14 @@ import com.trzewik.blackjack.deck.enums.Sign;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class Deck {
 
-    private ArrayList<Card> cards = new ArrayList<>();
+    private List<Card> cards;
 
     public Deck(){
+        this.cards = new ArrayList<>();
         for (Sign s : Sign.values()){
             for (Color c : Color.values()){
                 Card card = new Card(s, c);
