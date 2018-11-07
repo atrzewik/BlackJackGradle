@@ -10,7 +10,7 @@ public abstract class Contestant {
 
     private List<Card> hand;
     private Integer position;
-    private Boolean buster;
+    private boolean buster;
     private int cash;
     private String name;
 

@@ -74,7 +74,7 @@ public class UserInputProvider {
 
     private static Scanner getMessage(String message, String ... formats){
         Scanner userInput = new Scanner(System.in);
-        MessagePrinter.printMessage(message, formats);
+        MessagePrinter.printMessageInLine(message, formats);
         return userInput;
     }
 
