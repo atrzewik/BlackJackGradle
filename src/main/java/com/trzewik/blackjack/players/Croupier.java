@@ -6,7 +6,6 @@ public class Croupier extends Contestant {
 
     private int casino;
 
-
     public Croupier(){
         super("Croupier", 0);
     }

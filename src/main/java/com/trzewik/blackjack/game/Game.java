@@ -4,6 +4,7 @@ import java.util.*;
 
 import com.trzewik.blackjack.deck.Deck;
 import com.trzewik.blackjack.deck.enums.MoveType;
+import com.trzewik.blackjack.players.Contestant;
 import com.trzewik.blackjack.players.Croupier;
 import com.trzewik.blackjack.players.Player;
 import com.trzewik.userinputprovider.MessagePrinter;
@@ -15,6 +16,7 @@ public class Game {
     private List<Player> players;
     private Croupier croupier;
     private Deck deck;
+    private List<Contestant> contestants;
 
     public Game(int numberOfPlayers){
         this.deck = new Deck();
@@ -26,6 +28,9 @@ public class Game {
         this.playersBetting();
         this.playersAuction();
         this.getCroupierCards();
+        this.contestants = this.createContestants();
+        this.getContestantsPositions();
+        this.sortContestantsByPosition();
     }
 
 
@@ -114,5 +119,68 @@ public class Game {
                 }
             }
         }
+    }
+
+    private List<Contestant> createContestants(){
+        List<Contestant> contestants = new ArrayList<>(this.players);
+        contestants.add(croupier);
+        return contestants;
+        }
+
+    private void sortContestantsByScores() {
+        contestants.sort(Comparator.comparing(Contestant::countScore));
+    }
+
+    private void getContestantsPositions(){
+        this.sortContestantsByScores();
+        int positionFirst = 1;
+        int numberOfContestants = this.contestants.size();
+        for (int i=numberOfContestants; i>0; i--){
+            int reverseIteration = i -1;
+            Contestant currentContestant = this.contestants.get(reverseIteration);
+            if (currentContestant.countScore()>21){
+                if (i==numberOfContestants){
+                    currentContestant.setPosition(i);
+                }
+                else {
+                    Contestant previousContestant = this.contestants.get(reverseIteration+1);
+                    if (currentContestant.countScore() == previousContestant.countScore()){
+                        this.contestants.get(reverseIteration).setPosition(previousContestant.getPosition());
+                    }
+                    else {currentContestant.setPosition(i);
+                    currentContestant.setBuster(true);
+                    }
+                }
+            }
+            else {
+                if (i==numberOfContestants){
+                    currentContestant.setPosition(positionFirst);
+                }
+                else {
+                    Contestant previousContestant = this.contestants.get(reverseIteration+1);
+                    if (currentContestant.countScore() == previousContestant.countScore()){
+                        this.contestants.get(reverseIteration).setPosition(positionFirst);
+                    }
+                    else {
+                        positionFirst += 1;
+                        this.contestants.get(reverseIteration).setPosition(positionFirst);
+                    }
+                }
+            }
+        }
+    }
+
+    private void sortContestantsByPosition() {
+        contestants.sort(Comparator.comparing(Contestant::getPosition));
+    }
+
+    private int getWinPrize(){
+        List<Contestant> winners = new ArrayList<>();
+        for (Contestant contestant: this.contestants){
+            if (contestant.getPosition() == 1){
+                winners.add(contestant);
+            }
+        }
+        return this.croupier.getCasino()/winners.size();
     }
 }
