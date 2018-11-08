@@ -31,7 +31,7 @@ public class Game {
         this.getCroupierCards();
         this.contestants = this.createContestants();
         this.setBusters();
-        this.sortContestants();
+        this.contestants = this.sortContestants();
         this.setContestantsPositions();
         this.printGameResults();
     }
@@ -131,11 +131,9 @@ public class Game {
     }
 
     private void setBusters() {
-        for (Contestant contestant : this.contestants) {
-            if (contestant.countScore() > 21) {
-                contestant.setBuster(true);
-            }
-        }
+        this.contestants.stream()
+                .filter(contestant -> 21<contestant.countScore())
+                .forEach(contestant -> contestant.setBuster(true));
     }
 
     private List<Contestant> getSortedBusters() {
@@ -152,11 +150,10 @@ public class Game {
                 .collect(Collectors.toList());
     }
 
-    private void sortContestants() {
-        List<Contestant> sortedBusters = new ArrayList<>(this.getSortedBusters());
-        List<Contestant> sortedWinners = new ArrayList<>(this.getSortedWinners());
-        this.contestants = new ArrayList<>(sortedWinners);
-        this.contestants.addAll(sortedBusters);
+    private List<Contestant> sortContestants() {
+        List<Contestant> sortedContestants = new ArrayList<>(getSortedWinners());
+        sortedContestants.addAll(getSortedBusters());
+        return sortedContestants;
     }
 
     private void setContestantsPositions() {
@@ -186,17 +183,12 @@ public class Game {
         return this.croupier.getCasino() / winners.size();
     }
 
-    private List<Integer> getContestantsPositions() {
-        List<Integer> contestantsPositions = new ArrayList<>();
-        for (Contestant contestant : this.contestants) {
-            contestantsPositions.add(contestant.getPosition());
+    private void getProperResultsPrinting(int i, Contestant currentContestant, String message, String messageInLine, String ... formats){
+        Contestant lastContestant = this.contestants.get(this.contestants.size()-1);
+        if (currentContestant==lastContestant){
+            MessagePrinter.printMessageInLine(messageInLine, formats);
         }
-        return contestantsPositions;
-    }
-
-    private void getProperResultsPrinting(int contestantPosition, List<Integer>contestantsPositions, String message, String messageInLine, String ... formats){
-        contestantsPositions.remove((Integer)contestantPosition);
-        if (contestantsPositions.contains(contestantPosition)) {
+        else if (currentContestant.getPosition().equals(this.contestants.get(i+1).getPosition())) {
             MessagePrinter.printMessage(message, formats);
         }
         else {
@@ -206,20 +198,20 @@ public class Game {
 
     private void printGameResults() {
         int winPrize = this.getWinPrize();
-        List<Integer> contestantsPositions = getContestantsPositions();
-        for (Contestant contestant : this.contestants) {
-            int contestantPosition = contestant.getPosition();
-            if (!contestant.getBuster()) {
+        for (int i=0; i<this.contestants.size();i++) {
+            Contestant currentContestant = this.contestants.get(i);
+            int contestantPosition = currentContestant.getPosition();
+            if (!currentContestant.getBuster()) {
                 if (contestantPosition == 1) {
-                    contestant.setCash(contestant.getCash()+winPrize);
-                    this.getProperResultsPrinting(contestantPosition,contestantsPositions,MessageProvider.winners, MessageProvider.winner, contestant.getName(), String.valueOf(contestant.countScore()), String.valueOf(winPrize), String.valueOf(contestant.getCash()));
+                    currentContestant.setCash(currentContestant.getCash()+winPrize);
+                    this.getProperResultsPrinting(i,currentContestant,MessageProvider.winners, MessageProvider.winner, currentContestant.getName(), String.valueOf(currentContestant.countScore()), String.valueOf(winPrize), String.valueOf(currentContestant.getCash()));
                 }
                 else {
-                    this.getProperResultsPrinting(contestantPosition,contestantsPositions,MessageProvider.players, MessageProvider.player, contestant.getName(), String.valueOf(contestant.countScore()), String.valueOf(contestant.getCash()));
+                    this.getProperResultsPrinting(i,currentContestant,MessageProvider.players, MessageProvider.player, currentContestant.getName(), String.valueOf(currentContestant.countScore()), String.valueOf(currentContestant.getCash()));
                 }
             }
             else {
-                this.getProperResultsPrinting(contestantPosition,contestantsPositions,MessageProvider.busters, MessageProvider.buster, contestant.getName(), String.valueOf(contestant.countScore()), String.valueOf(contestant.getCash()));
+                this.getProperResultsPrinting(i,currentContestant,MessageProvider.busters, MessageProvider.buster, currentContestant.getName(), String.valueOf(currentContestant.countScore()), String.valueOf(currentContestant.getCash()));
             }
         }
     }
