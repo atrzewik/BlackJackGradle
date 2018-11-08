@@ -183,12 +183,13 @@ public class Game {
         return this.croupier.getCasino() / winners.size();
     }
 
-    private void getProperResultsPrinting(int i, Contestant currentContestant, String message, String messageInLine, String ... formats){
+    private void getProperResultsPrinting(int placeOfCurrentContestant, Contestant currentContestant, String message, String messageInLine, String ... formats){
         Contestant lastContestant = this.contestants.get(this.contestants.size()-1);
+        int placeOfNextContestant = placeOfCurrentContestant +1;
         if (currentContestant==lastContestant){
             MessagePrinter.printMessageInLine(messageInLine, formats);
         }
-        else if (currentContestant.getPosition().equals(this.contestants.get(i+1).getPosition())) {
+        else if (currentContestant.getPosition().equals(this.contestants.get(placeOfNextContestant).getPosition())) {
             MessagePrinter.printMessage(message, formats);
         }
         else {
