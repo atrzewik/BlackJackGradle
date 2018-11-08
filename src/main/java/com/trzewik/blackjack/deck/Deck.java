@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Deck {
 
-    private List<Card> cards;
+    protected List<Card> cards;
 
     public Deck(){
         this.cards = new ArrayList<>();

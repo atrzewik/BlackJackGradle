@@ -14,10 +14,6 @@ public class Croupier extends Contestant {
         return this.casino;
     }
 
-    public void setCasino(int casino){
-        this.casino = casino;
-    }
-
     public boolean shouldDrawCards(){
         return super.countScore() <= 16;
     }
