@@ -6,9 +6,6 @@ import com.trzewik.blackjack.deck.enums.Sign;
 import org.junit.Test;
 
 
-import java.util.Arrays;
-import java.util.List;
-
 import static org.junit.Assert.*;
 
 public class CroupierTest {
@@ -28,7 +25,7 @@ public class CroupierTest {
 
     @Test
     public void getSingleCard() {
-        assertSame(new Card(Sign.ACE,Color.HEART),croupier.getSingleCard());
+        assertEquals("ACE HEART",croupier.getSingleCard().toString());
     }
 
     @Test
@@ -68,9 +65,7 @@ public class CroupierTest {
 
     @Test
     public void getHand() {
-        List<Card> cards = Arrays.asList(new Card(Sign.ACE, Color.HEART),
-                        new Card(Sign.TWO, Color.CLUB));
-        assertSame(cards,croupier.getHand());
+        assertEquals("ACE HEART", croupier.getHand().get(0).toString());
     }
 
     @Test
