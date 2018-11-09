@@ -1,8 +1,5 @@
 package com.trzewik.blackjack.game;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 import com.trzewik.blackjack.deck.Deck;
 import com.trzewik.blackjack.deck.enums.MoveType;
 import com.trzewik.blackjack.players.Contestant;
@@ -11,6 +8,12 @@ import com.trzewik.blackjack.players.Player;
 import com.trzewik.userinputprovider.MessagePrinter;
 import com.trzewik.userinputprovider.UserInputMatcher;
 import com.trzewik.userinputprovider.UserInputProvider;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Game {
 
@@ -24,18 +27,19 @@ public class Game {
         this.croupier = new Croupier();
         this.players = new ArrayList<>();
         this.createPlayers(numberOfPlayers);
+    }
+
+    public void initialization() {
         this.dealCards();
         this.printCroupierSingleCard();
         this.playersBetting();
         this.playersAuction();
         this.getCroupierCards();
         this.contestants = this.createContestants();
-        this.setBusters();
         this.contestants = this.sortContestants();
         this.setContestantsPositions();
         this.printGameResults();
     }
-
 
     private void createPlayers(int numberOfPlayers) {
         for (int i = 0; i < numberOfPlayers; i++) {
@@ -47,12 +51,12 @@ public class Game {
     }
 
     private void dealCards() {
-        for (int i = 0; i < 2; i++) {
-            for (Player player : this.players) {
-                player.addCardToHand(deck.getCard());
-            }
-            croupier.addCardToHand(deck.getCard());
-        }
+        IntStream.range(0, 2)
+                .forEach(i -> {
+                            this.players.forEach(player -> player.addCardToHand(deck.getCard()));
+                            croupier.addCardToHand(deck.getCard());
+                        }
+                );
     }
 
     private void printCroupierSingleCard() {
@@ -65,6 +69,32 @@ public class Game {
             player.setBetValue(UserInputProvider.collectIntegerInRangeMinMax(1, player.getCash(), MessageProvider.askPlayerForBet, player.getName()));
             croupier.getMoneyFromPlayer(player);
         }
+    }
+
+    private void playersAuction() {
+        while (this.anyPlayerHaveMove()) {
+            for (Player player : this.players) {
+                if (player.getHand().size() >= 11) {
+                    player.setLastMove(MoveType.STAND);
+                }
+                if (player.getLastMove() == MoveType.HIT || player.getLastMove() == null) {
+                    MessagePrinter.printMessageInLine(MessageProvider.tellPlayerHandPoints, player.getName(), player.getHand().toString(), String.valueOf(player.countScore()));
+                    MoveType choice = this.getUserChoice(player);
+                    player.setLastMove(choice);
+                    this.gameAction(choice, player);
+                }
+            }
+        }
+    }
+
+    private boolean anyPlayerHaveMove() {
+        boolean somePlayerHaveMove = false;
+        for (Player player : this.players) {
+            if (player.getLastMove() == MoveType.HIT || player.getLastMove() == null) {
+                somePlayerHaveMove = true;
+            }
+        }
+        return somePlayerHaveMove;
     }
 
     private MoveType getUserChoice(Player player) {
@@ -86,7 +116,6 @@ public class Game {
                 player.setLastMove(MoveType.DOUBLE_DOWN);
                 MessagePrinter.printMessageInLine(MessageProvider.getTellPlayerHandPointsBet, player.getHand().toString(), String.valueOf(player.countScore()), String.valueOf(player.getBetValue()));
                 break;
-            default:
         }
     }
 
@@ -98,62 +127,31 @@ public class Game {
         MessagePrinter.printMessageInLine(MessageProvider.tellCroupierHandPoints, croupier.getHand().toString(), String.valueOf(croupier.countScore()));
     }
 
-    private boolean anyPlayerHaveMove() {
-        boolean somePlayerHaveMove = false;
-        for (Player player : this.players) {
-            if (player.getLastMove() == MoveType.HIT || player.getLastMove() == null) {
-                somePlayerHaveMove = true;
-            }
-        }
-        return somePlayerHaveMove;
-    }
-
-    private void playersAuction() {
-        while (this.anyPlayerHaveMove()) {
-            for (Player player : this.players) {
-                if (player.getHand().size() >= 11) {
-                    player.setLastMove(MoveType.STAND);
-                }
-                if (player.getLastMove() == MoveType.HIT || player.getLastMove() == null) {
-                    MessagePrinter.printMessageInLine(MessageProvider.tellPlayerHandPoints, player.getName(), player.getHand().toString(), String.valueOf(player.countScore()));
-                    MoveType choice = this.getUserChoice(player);
-                    player.setLastMove(choice);
-                    this.gameAction(choice, player);
-                }
-            }
-        }
-    }
-
     private List<Contestant> createContestants() {
         List<Contestant> contestants = new ArrayList<>(this.players);
         contestants.add(croupier);
         return contestants;
     }
 
-    private void setBusters() {
-        this.contestants.stream()
-                .filter(contestant -> 21<contestant.countScore())
-                .forEach(contestant -> contestant.setBuster(true));
+
+    private List<Contestant> sortContestants() {
+        List<Contestant> sortedContestants = new ArrayList<>(getSortedWinners());
+        sortedContestants.addAll(getSortedBusters());
+        return sortedContestants;
     }
 
     private List<Contestant> getSortedBusters() {
         return this.contestants.stream()
-                .filter(Contestant::getBuster)
+                .filter(Contestant::checkIfBuster)
                 .sorted(Comparator.comparing(Contestant::countScore))
                 .collect(Collectors.toList());
     }
 
     private List<Contestant> getSortedWinners() {
         return this.contestants.stream()
-                .filter(contestant -> !contestant.getBuster())
+                .filter(contestant -> !contestant.checkIfBuster())
                 .sorted(Comparator.comparing(Contestant::countScore).reversed())
                 .collect(Collectors.toList());
-    }
-
-    private List<Contestant> sortContestants() {
-        List<Contestant> sortedContestants = new ArrayList<>(getSortedWinners());
-        sortedContestants.addAll(getSortedBusters());
-        return sortedContestants;
     }
 
     private void setContestantsPositions() {
@@ -173,6 +171,29 @@ public class Game {
         }
     }
 
+    private void printGameResults() {
+        this.setWinnersCash();
+        for (int i = 0; i < this.contestants.size(); i++) {
+            Contestant currentContestant = this.contestants.get(i);
+            int contestantPosition = currentContestant.getPosition();
+            if (!currentContestant.checkIfBuster()) {
+                if (contestantPosition == 1) {
+                    this.getProperResultsPrinting(i, currentContestant, MessageProvider.winners, MessageProvider.winner, currentContestant.getName(), String.valueOf(currentContestant.countScore()), String.valueOf(this.getWinPrize()), String.valueOf(currentContestant.getCash()));
+                } else {
+                    this.getProperResultsPrinting(i, currentContestant, MessageProvider.players, MessageProvider.player, currentContestant.getName(), String.valueOf(currentContestant.countScore()), String.valueOf(currentContestant.getCash()));
+                }
+            } else {
+                this.getProperResultsPrinting(i, currentContestant, MessageProvider.busters, MessageProvider.buster, currentContestant.getName(), String.valueOf(currentContestant.countScore()), String.valueOf(currentContestant.getCash()));
+            }
+        }
+    }
+
+    private void setWinnersCash() {
+        this.players.stream()
+                .filter(player -> player.getPosition() == 1)
+                .forEach(player -> player.setCash(player.getCash() + this.getWinPrize()));
+    }
+
     private int getWinPrize() {
         List<Contestant> winners = new ArrayList<>();
         for (Contestant contestant : this.contestants) {
@@ -183,37 +204,15 @@ public class Game {
         return this.croupier.getCasino() / winners.size();
     }
 
-    private void getProperResultsPrinting(int placeOfCurrentContestant, Contestant currentContestant, String message, String messageInLine, String ... formats){
-        Contestant lastContestant = this.contestants.get(this.contestants.size()-1);
-        int placeOfNextContestant = placeOfCurrentContestant +1;
-        if (currentContestant==lastContestant){
+    private void getProperResultsPrinting(int placeOfCurrentContestant, Contestant currentContestant, String message, String messageInLine, String... formats) {
+        Contestant lastContestant = this.contestants.get(this.contestants.size() - 1);
+        int placeOfNextContestant = placeOfCurrentContestant + 1;
+        if (currentContestant == lastContestant) {
             MessagePrinter.printMessageInLine(messageInLine, formats);
-        }
-        else if (currentContestant.getPosition().equals(this.contestants.get(placeOfNextContestant).getPosition())) {
+        } else if (currentContestant.getPosition().equals(this.contestants.get(placeOfNextContestant).getPosition())) {
             MessagePrinter.printMessage(message, formats);
-        }
-        else {
+        } else {
             MessagePrinter.printMessageInLine(messageInLine, formats);
-        }
-    }
-
-    private void printGameResults() {
-        int winPrize = this.getWinPrize();
-        for (int i=0; i<this.contestants.size();i++) {
-            Contestant currentContestant = this.contestants.get(i);
-            int contestantPosition = currentContestant.getPosition();
-            if (!currentContestant.getBuster()) {
-                if (contestantPosition == 1) {
-                    currentContestant.setCash(currentContestant.getCash()+winPrize);
-                    this.getProperResultsPrinting(i,currentContestant,MessageProvider.winners, MessageProvider.winner, currentContestant.getName(), String.valueOf(currentContestant.countScore()), String.valueOf(winPrize), String.valueOf(currentContestant.getCash()));
-                }
-                else {
-                    this.getProperResultsPrinting(i,currentContestant,MessageProvider.players, MessageProvider.player, currentContestant.getName(), String.valueOf(currentContestant.countScore()), String.valueOf(currentContestant.getCash()));
-                }
-            }
-            else {
-                this.getProperResultsPrinting(i,currentContestant,MessageProvider.busters, MessageProvider.buster, currentContestant.getName(), String.valueOf(currentContestant.countScore()), String.valueOf(currentContestant.getCash()));
-            }
         }
     }
 }

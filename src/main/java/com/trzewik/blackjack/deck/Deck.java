@@ -11,10 +11,10 @@ public class Deck {
 
     private List<Card> cards;
 
-    public Deck(){
+    public Deck() {
         this.cards = new ArrayList<>();
-        for (Sign s : Sign.values()){
-            for (Color c : Color.values()){
+        for (Sign s : Sign.values()) {
+            for (Color c : Color.values()) {
                 Card card = new Card(s, c);
                 this.cards.add(card);
             }
@@ -22,17 +22,17 @@ public class Deck {
         shuffleDeck();
     }
 
-    private void shuffleDeck(){
+    private void shuffleDeck() {
         Collections.shuffle(this.cards);
     }
 
-    public Card getCard(){
+    public Card getCard() {
         Card card = this.cards.get(0);
         deleteCardFromDeck(card);
         return card;
     }
 
-    private void deleteCardFromDeck(Card card){
+    private void deleteCardFromDeck(Card card) {
         this.cards.remove(card);
     }
 }

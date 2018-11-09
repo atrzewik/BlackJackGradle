@@ -6,29 +6,29 @@ public class Croupier extends Contestant {
 
     private int casino;
 
-    public Croupier(){
+    public Croupier() {
         super("Croupier", 0);
     }
 
-    public int getCasino(){
+    public int getCasino() {
         return this.casino;
     }
 
-    public boolean shouldDrawCards(){
+    public boolean shouldDrawCards() {
         return super.countScore() <= 16;
     }
 
-    public Card getSingleCard(){
+    public Card getSingleCard() {
         return super.getHand().get(0);
     }
 
-    public void getMoneyFromPlayerIfDoubleDown(Player player){
+    public void getMoneyFromPlayerIfDoubleDown(Player player) {
         player.payBetValue();
         this.casino += player.getBetValue();
         player.doubleBetValue();
     }
 
-    public void getMoneyFromPlayer(Player player){
+    public void getMoneyFromPlayer(Player player) {
         player.payBetValue();
         this.casino += player.getBetValue();
     }
