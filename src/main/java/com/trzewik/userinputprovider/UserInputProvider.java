@@ -1,16 +1,39 @@
 package com.trzewik.userinputprovider;
 
-import com.trzewik.blackjack.MessagePrinter;
-import com.trzewik.blackjack.MoveType;
-
-import java.util.List;
 import java.util.Scanner;
 
 
 public class UserInputProvider {
 
+    public static Integer collectIntegerInRangeMin(Integer minimum, String message, String... formats) {
+        while (true) {
+            try {
+                Integer userInput = collectInteger(message, formats);
+                if (userInput >= minimum) {
+                    return userInput;
+                }
+                throw new ArithmeticException();
+            } catch (Exception e) {
+                MessagePrinter.printErrorMessage("You must input value in range bigger than: %s ! Please try again: ", minimum.toString());
+            }
+        }
+    }
 
-    public static String collectString(String message, String ... formats){
+    public static Integer collectIntegerInRangeMinMax(Integer minimum, Integer maximum, String message, String... formats) {
+        while (true) {
+            try {
+                Integer userInput = collectInteger(message, formats);
+                if (userInput >= minimum && userInput <= maximum) {
+                    return userInput;
+                }
+                throw new ArithmeticException();
+            } catch (Exception e) {
+                MessagePrinter.printErrorMessage("You must input value in range: %s - %s! Please try again: ", minimum.toString(), maximum.toString());
+            }
+        }
+    }
+
+    public static String collectString(String message, String... formats) {
         while (true) {
             try {
                 Scanner userInput = getMessage(message, formats);
@@ -21,7 +44,7 @@ public class UserInputProvider {
         }
     }
 
-    public static Integer collectInteger(String message, String ... formats) {
+    public static Integer collectInteger(String message, String... formats) {
         while (true) {
             try {
                 Scanner userInput = getMessage(message, formats);
@@ -32,78 +55,10 @@ public class UserInputProvider {
         }
     }
 
-    public static String collectProperString(List<String> listOfStrings, String message, String ... formats) {
-        while (true) {
-            try {
-                String userInput = collectString(message, formats);
-                if (listOfStrings.contains(userInput)) {
-                    return userInput;
-                }
-                throw new IllegalArgumentException();
-            } catch (Exception e) {
-                MessagePrinter.printErrorMessage("You must input string: %s! Please try again: ", listOfStrings.toString());
-            }
-        }
-    }
 
-
-    public static MoveType collectProperMoveType(List<MoveType> listOfEnums, List<String> listOfString, String message, String ... formats){
-        while (true) {
-            try {
-                MoveType enumUserInput = collectMoveType(listOfString,message,formats);
-                if (listOfEnums.contains(enumUserInput)) {
-                    return  enumUserInput;
-                }
-                throw new IllegalArgumentException();
-            } catch (Exception e) {
-                MessagePrinter.printErrorMessage("You must input string: %s! Please try again: ", listOfString.toString());
-            }
-        }
-    }
-
-    public static Integer collectIntegerInRangeMin(Integer minimum, String message, String ... formats){
-            while (true) {
-                try {
-                    Integer userInput = collectInteger(message, formats);
-                    if (userInput >= minimum) {
-                        return userInput;
-                    }
-                    throw new ArithmeticException();
-                } catch (Exception e) {
-                    MessagePrinter.printErrorMessage("You must input value in range bigger than: %s ! Please try again: ", minimum.toString());
-                }
-            }
-        }
-
-    public static Integer collectIntegerInRangeMinMax(Integer minimum, Integer maximum, String message, String ... formats){
-        while (true){
-            try {
-                Integer userInput = collectInteger(message,formats);
-                if (userInput >= minimum && userInput <= maximum){
-                    return userInput;
-                }
-                throw new  ArithmeticException();
-            }
-            catch (Exception e){
-                MessagePrinter.printErrorMessage("You must input value in range: %s - %s! Please try again: ", minimum.toString(), maximum.toString());
-            }
-        }
-    }
-
-    private static Scanner getMessage(String message, String ... formats){
+    private static Scanner getMessage(String message, String... formats) {
         Scanner userInput = new Scanner(System.in);
-        MessagePrinter.printMessage(message, formats);
+        MessagePrinter.printMessageInLine(message, formats);
         return userInput;
-    }
-
-    private static MoveType collectMoveType(List<String> listOfString, String message, String ... formats) {
-        while (true) {
-            try {
-                String userInput = collectString(message, formats);
-                return MoveType.matchMove(userInput);
-            } catch (Exception e) {
-                MessagePrinter.printErrorMessage("You must input string: %s! Please try again: ", listOfString.toString());
-            }
-        }
     }
 }

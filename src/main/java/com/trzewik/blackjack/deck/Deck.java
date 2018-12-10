@@ -5,33 +5,34 @@ import com.trzewik.blackjack.deck.enums.Sign;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class Deck {
 
-    private ArrayList<Card> listOfCards = new ArrayList<>();
+    private List<Card> cards;
 
-    public Deck(){
-        for (Sign s : Sign.values()){
-            for (Color c : Color.values()){
+    public Deck() {
+        this.cards = new ArrayList<>();
+        for (Sign s : Sign.values()) {
+            for (Color c : Color.values()) {
                 Card card = new Card(s, c);
-                this.listOfCards.add(card);
+                this.cards.add(card);
             }
         }
         shuffleDeck();
     }
 
-    private ArrayList<Card> shuffleDeck(){
-        Collections.shuffle(this.listOfCards);
-        return listOfCards;
-    }
-
-    public Card getCard(){
-        Card card = this.listOfCards.get(0);
+    public Card getCard() {
+        Card card = this.cards.get(0);
         deleteCardFromDeck(card);
         return card;
     }
 
-    private void deleteCardFromDeck(Card card){
-        this.listOfCards.remove(card);
+    private void shuffleDeck() {
+        Collections.shuffle(this.cards);
+    }
+
+    private void deleteCardFromDeck(Card card) {
+        this.cards.remove(card);
     }
 }

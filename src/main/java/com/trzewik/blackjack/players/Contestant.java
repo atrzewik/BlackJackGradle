@@ -10,66 +10,57 @@ public abstract class Contestant {
 
     private List<Card> hand;
     private Integer position;
-    private boolean buster;
     private int cash;
     private String name;
 
-    public Contestant(){
-        this.hand = new ArrayList<>();
-        this.buster = false;
-    }
-
-    public Contestant(String name, int cash){
+    public Contestant(String name, int cash) {
         this.cash = cash;
         this.name = name;
+        this.hand = new ArrayList<>();
     }
 
-    public String getName(){
+    public String getName() {
         return this.name;
     }
 
-    public void setName(String name){
-        this.name = name;
-    }
-
-    public int getCash(){
+    public int getCash() {
         return this.cash;
     }
 
-    public void setCash(int cash){
+    public void setCash(Integer cash) {
         this.cash = cash;
     }
 
-    public boolean getBuster(){
-        return this.buster;
+    public Integer getPosition() {
+        return position;
     }
 
-    public void setBuster(boolean buster){
-        this.buster = buster;
+    public void setPosition(Integer position) {
+        this.position = position;
     }
 
-    public int getPosition(){
-        return this.position;
-    }
-
-    public void setPosition(int position){
-        this.position =position;
-    }
-
-    public List<Card> getHand(){
+    public List<Card> getHand() {
         return this.hand;
     }
 
-    public void addCardToHand(Card card){
+    public void addCardToHand(Card card) {
         this.hand.add(card);
     }
 
-    private boolean aceInHand(){
+    public Boolean checkIfBuster() {
+        return this.countScore() > 21;
+    }
+
+    private boolean aceInHand() {
         ArrayList<Sign> listOfSigns = new ArrayList<>();
-        for (Card card : this.hand){
+        for (Card card : this.hand) {
             listOfSigns.add(card.getSign());
         }
         return listOfSigns.contains(Sign.ACE);
+    }
+
+    public List<Card> cardsToPrint(){
+        return this.hand;
     }
 
     public int countScore() {
@@ -77,7 +68,7 @@ public abstract class Contestant {
         for (Card card : this.hand) {
             score += card.getValue();
         }
-        if (this.aceInHand() & score <= 11){
+        if (this.aceInHand() & score <= 11) {
             score += 10;
         }
         return score;

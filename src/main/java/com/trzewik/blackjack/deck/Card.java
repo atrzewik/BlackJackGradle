@@ -8,7 +8,7 @@ public class Card {
     private Sign sign;
     private Color color;
 
-    public Card(Sign sign, Color color){
+    public Card(Sign sign, Color color) {
         this.sign = sign;
         this.color = color;
     }
@@ -18,12 +18,11 @@ public class Card {
         return this.sign.name() + " " + this.color.name();
     }
 
-    public int getValue(){
+    public int getValue() {
         return this.sign.getValue();
     }
 
-    public Sign getSign(){
+    public Sign getSign() {
         return this.sign;
     }
-
 }
