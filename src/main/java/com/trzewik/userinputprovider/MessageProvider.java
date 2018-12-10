@@ -1,4 +1,4 @@
-package com.trzewik.blackjack.game;
+package com.trzewik.userinputprovider;
 
 
 public class MessageProvider {
@@ -24,7 +24,6 @@ public class MessageProvider {
     public static String winners = "The winner is %s with %s points and %s $prize - his cash capital is equal %s $, and ";
 
     public static String winner = "The winner is %s with %s points and %s $prize - his cash capital is equal %s $";
-
     public static String players = "%s with %s points and cash capital equal %s $, and ";
 
     public static String player = "%s with %s points and cash capital equal %s $";
@@ -32,5 +31,4 @@ public class MessageProvider {
     public static String busters = "The busters is %s with %s points and cash capital equal %s $, and ";
 
     public static String buster = "The busters is %s with %s points and cash capital equal %s $";
-
 }
