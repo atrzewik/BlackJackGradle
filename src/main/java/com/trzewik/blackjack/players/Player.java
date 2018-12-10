@@ -39,5 +39,8 @@ public class Player extends Contestant {
         this.betValue *= 2;
     }
 
+    public boolean hasPossibleMove() {
+        return getLastMove() == MoveType.HIT || getLastMove() == null;
+    }
 
 }

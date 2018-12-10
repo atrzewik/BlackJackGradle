@@ -4,6 +4,8 @@ import java.util.MissingFormatArgumentException;
 
 public class MessagePrinter {
 
+    private static String missingFormatArgument = "You specified too less format arguments!";
+
     public static void printMessageInLine(String message, String... formats) {
         try {
             System.out.println(String.format(message, formats));
@@ -27,6 +29,4 @@ public class MessagePrinter {
             throw new MissingFormatArgumentException(missingFormatArgument);
         }
     }
-
-    private static String missingFormatArgument = "You specified too less format arguments!";
 }

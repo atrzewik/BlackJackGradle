@@ -1,7 +1,9 @@
 package com.trzewik.blackjack.deck;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +21,19 @@ public class DeckTest {
     }
 
     @Test
-    public void getCard() {
-        List<Card> cards = new ArrayList<>();
+    public void shouldGetAllCards() {
         IntStream.range(0, 52)
-                .forEach(i -> cards.add(deck.getCard()));
-        assertEquals(52, cards.size());
+                .forEach(i -> deck.getCard());
     }
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
+    @Test
+    public void shouldNotGetAllCards(){
+        thrown.expect(Exception.class);
+        IntStream.range(0, 53)
+                .forEach(i -> deck.getCard());
+    }
+
 }

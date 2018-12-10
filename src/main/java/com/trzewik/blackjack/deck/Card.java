@@ -25,5 +25,4 @@ public class Card {
     public Sign getSign() {
         return this.sign;
     }
-
 }

@@ -1,13 +1,39 @@
 package com.trzewik.userinputprovider;
 
-import java.util.List;
 import java.util.Scanner;
 
 
 public class UserInputProvider {
 
+    public static Integer collectIntegerInRangeMin(Integer minimum, String message, String... formats) {
+        while (true) {
+            try {
+                Integer userInput = collectInteger(message, formats);
+                if (userInput >= minimum) {
+                    return userInput;
+                }
+                throw new ArithmeticException();
+            } catch (Exception e) {
+                MessagePrinter.printErrorMessage("You must input value in range bigger than: %s ! Please try again: ", minimum.toString());
+            }
+        }
+    }
 
-    public static String collectString(String message, String ... formats){
+    public static Integer collectIntegerInRangeMinMax(Integer minimum, Integer maximum, String message, String... formats) {
+        while (true) {
+            try {
+                Integer userInput = collectInteger(message, formats);
+                if (userInput >= minimum && userInput <= maximum) {
+                    return userInput;
+                }
+                throw new ArithmeticException();
+            } catch (Exception e) {
+                MessagePrinter.printErrorMessage("You must input value in range: %s - %s! Please try again: ", minimum.toString(), maximum.toString());
+            }
+        }
+    }
+
+    public static String collectString(String message, String... formats) {
         while (true) {
             try {
                 Scanner userInput = getMessage(message, formats);
@@ -18,7 +44,7 @@ public class UserInputProvider {
         }
     }
 
-    public static Integer collectInteger(String message, String ... formats) {
+    public static Integer collectInteger(String message, String... formats) {
         while (true) {
             try {
                 Scanner userInput = getMessage(message, formats);
@@ -29,54 +55,10 @@ public class UserInputProvider {
         }
     }
 
-    public static String collectProperString(List<String> expectedStrings, String message, String ... formats) {
-        while (true) {
-            try {
-                String userInput = collectString(message, formats);
-                if (expectedStrings.contains(userInput)) {
-                    return userInput;
-                }
-                throw new IllegalArgumentException();
-            } catch (IllegalArgumentException e) {
-                MessagePrinter.printErrorMessage("You must input string: %s! Please try again: ", expectedStrings.toString());
-            }
-        }
-    }
 
-    public static Integer collectIntegerInRangeMin(Integer minimum, String message, String ... formats){
-            while (true) {
-                try {
-                    Integer userInput = collectInteger(message, formats);
-                    if (userInput >= minimum) {
-                        return userInput;
-                    }
-                    throw new ArithmeticException();
-                } catch (Exception e) {
-                    MessagePrinter.printErrorMessage("You must input value in range bigger than: %s ! Please try again: ", minimum.toString());
-                }
-            }
-        }
-
-    public static Integer collectIntegerInRangeMinMax(Integer minimum, Integer maximum, String message, String ... formats){
-        while (true){
-            try {
-                Integer userInput = collectInteger(message,formats);
-                if (userInput >= minimum && userInput <= maximum){
-                    return userInput;
-                }
-                throw new  ArithmeticException();
-            }
-            catch (Exception e){
-                MessagePrinter.printErrorMessage("You must input value in range: %s - %s! Please try again: ", minimum.toString(), maximum.toString());
-            }
-        }
-    }
-
-    private static Scanner getMessage(String message, String ... formats){
+    private static Scanner getMessage(String message, String... formats) {
         Scanner userInput = new Scanner(System.in);
         MessagePrinter.printMessageInLine(message, formats);
         return userInput;
     }
-
-
 }

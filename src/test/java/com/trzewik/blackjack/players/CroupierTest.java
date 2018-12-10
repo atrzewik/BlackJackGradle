@@ -24,11 +24,30 @@ public class CroupierTest {
     }
 
     @Test
+    public void shouldNotDrawCards() {
+        croupier.addCardToHand(new Card(Sign.KING, Color.HEART));
+        croupier.addCardToHand(new Card(Sign.FOUR, Color.CLUB));
+        assertFalse(croupier.shouldDrawCards());
+    }
+
+    @Test
     public void getMoneyFromPlayerIfDoubleDown() {
+        Player player = new Player("Aga", 50);
+        player.setBetValue(20);
+        croupier.getMoneyFromPlayerIfDoubleDown(player);
+        assertEquals(20, croupier.getCasino());
+        assertEquals(40, player.getBetValue());
+        assertEquals(30, player.getCash());
     }
 
     @Test
     public void getMoneyFromPlayer() {
+        Player player = new Player("Aga", 50);
+        player.setBetValue(20);
+        croupier.getMoneyFromPlayer(player);
+        assertEquals(20, croupier.getCasino());
+        assertEquals(20, player.getBetValue());
+        assertEquals(30, player.getCash());
     }
 
     @Test
@@ -44,12 +63,24 @@ public class CroupierTest {
     }
 
     @Test
+    public void cardsToPrint() {
+        assertEquals("[ACE HEART]", croupier.cardsToPrint().toString());
+    }
+
+    @Test
     public void countScore() {
         assertEquals(13, croupier.countScore());
     }
 
     @Test
-    public void checkIfBuster() {
+    public void checkIfNotBuster() {
         assertFalse(croupier.checkIfBuster());
+    }
+
+    @Test
+    public void checkIfBuster() {
+        croupier.addCardToHand(new Card(Sign.KING, Color.HEART));
+        croupier.addCardToHand(new Card(Sign.QUEEN, Color.CLUB));
+        assertTrue(croupier.checkIfBuster());
     }
 }

@@ -22,14 +22,14 @@ public class Deck {
         shuffleDeck();
     }
 
-    private void shuffleDeck() {
-        Collections.shuffle(this.cards);
-    }
-
     public Card getCard() {
         Card card = this.cards.get(0);
         deleteCardFromDeck(card);
         return card;
+    }
+
+    private void shuffleDeck() {
+        Collections.shuffle(this.cards);
     }
 
     private void deleteCardFromDeck(Card card) {

@@ -59,6 +59,10 @@ public abstract class Contestant {
         return listOfSigns.contains(Sign.ACE);
     }
 
+    public List<Card> cardsToPrint(){
+        return this.hand;
+    }
+
     public int countScore() {
         int score = 0;
         for (Card card : this.hand) {

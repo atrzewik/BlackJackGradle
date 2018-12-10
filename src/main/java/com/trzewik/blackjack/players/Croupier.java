@@ -2,6 +2,9 @@ package com.trzewik.blackjack.players;
 
 import com.trzewik.blackjack.deck.Card;
 
+import java.util.Collections;
+import java.util.List;
+
 public class Croupier extends Contestant {
 
     private int casino;
@@ -18,14 +21,15 @@ public class Croupier extends Contestant {
         return super.countScore() <= 16;
     }
 
-    public Card getSingleCard() {
-        return super.getHand().get(0);
-    }
-
     public void getMoneyFromPlayerIfDoubleDown(Player player) {
         player.payBetValue();
         this.casino += player.getBetValue();
         player.doubleBetValue();
+    }
+
+    @Override
+    public List<Card> cardsToPrint(){
+        return Collections.singletonList(super.getHand().get(0));
     }
 
     public void getMoneyFromPlayer(Player player) {
