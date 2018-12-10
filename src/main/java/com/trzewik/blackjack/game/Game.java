@@ -7,9 +7,11 @@ import com.trzewik.blackjack.deck.enums.MoveType;
 import com.trzewik.blackjack.players.Contestant;
 import com.trzewik.blackjack.players.Croupier;
 import com.trzewik.blackjack.players.Player;
-import com.trzewik.userinputprovider.MessagePrinter;
-import com.trzewik.userinputprovider.UserInputMatcher;
-import com.trzewik.userinputprovider.UserInputProvider;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Game {
 
@@ -18,58 +20,73 @@ public class Game {
     private Deck deck;
     private List<Contestant> contestants;
 
-    public Game(int numberOfPlayers){
+    public Game() {
         this.deck = new Deck();
         this.croupier = new Croupier();
         this.players = new ArrayList<>();
-        this.createPlayers(numberOfPlayers);
-        this.dealCards();
-        this.printCroupierSingleCard();
-        this.playersBetting();
-        this.playersAuction();
-        this.getCroupierCards();
-        this.contestants = this.createContestants();
-        this.getContestantsPositions();
-        this.sortContestantsByPosition();
     }
 
-
-    private void createPlayers(int numberOfPlayers){
-        for (int i=0; i<numberOfPlayers; i++){
-            String name = UserInputProvider.collectString(MessageProvider.collectName);
-            int cash = UserInputProvider.collectIntegerInRangeMin(1, MessageProvider.collectCash, name);
-            Player player = new Player(name, cash);
-            this.players.add(player);
-        }
+    public Croupier getCroupier() {
+        return croupier;
     }
 
-    private void dealCards(){
-        for (int i=0; i<2; i++){
-            for (Player player: this.players){
-                player.addCardToHand(deck.getCard());
+    public Deck getDeck() {
+        return deck;
+    }
+
+    public List<Contestant> getContestants() {
+        return contestants;
+    }
+
+    public void setContestants(List<Contestant> contestants) {
+        this.contestants = contestants;
+    }
+
+    public List<Player> getPlayers() {
+        return this.players;
+    }
+
+    public void createPlayer(String name, int cash) {
+        Player player = new Player(name, cash);
+        this.players.add(player);
+    }
+
+    public List<Player> getPlayersWithPossibleMove() {
+        return this.players.stream()
+                .filter(Player::hasPossibleMove)
+                .collect(Collectors.toList());
+    }
+
+    public void createContestants() {
+        this.contestants = new ArrayList<>(this.players);
+        contestants.add(croupier);
+    }
+
+    public void dealCards() {
+        for (int i = 0; i < 2; i++) {
+            for (Contestant contestant : this.contestants) {
+                contestant.addCardToHand(this.deck.getCard());
             }
-            croupier.addCardToHand(deck.getCard());
         }
     }
 
-    private void printCroupierSingleCard(){
-        MessagePrinter.printMessage(MessageProvider.collectCardFromCroupier + croupier.getSingleCard());
+    public void playerBetting(Player player, int betValue) {
+        player.setBetValue(betValue);
+        croupier.getMoneyFromPlayer(player);
     }
 
-    private void playersBetting(){
-        for (Player player: this.players){
-            MessagePrinter.printMessage(MessageProvider.tellPlayerHandPoints, player.getName(), player.getHand().toString(), String.valueOf(player.countScore()));
-            player.setBetValue(UserInputProvider.collectIntegerInRangeMinMax(1, player.getCash(),MessageProvider.askPlayerForBet, player.getName()));
-            croupier.getMoneyFromPlayer(player);
+    public void playerAuction(Player player, MoveType choice) {
+        if (player.getHand().size() >= 11) {
+            player.setLastMove(MoveType.STAND);
+        }
+        if (player.hasPossibleMove()) {
+            player.setLastMove(choice);
+            gameAction(choice, player);
         }
     }
 
-    private MoveType getUserChoice(Player player){
-        if (player.getCash() >= player.getBetValue() && player.getLastMove() == null){
-            return UserInputMatcher.collectProperMoveType(MoveType.values(), MessageProvider.askPlayerForHitStandDouble, player.getName());
-        }
-        else {return UserInputMatcher.collectProperMoveType(MoveType.getHitStand(), MessageProvider.getAskPlayerForHitStand, player.getName());
-        }
+    public boolean anyPlayerHaveMove() {
+        return getPlayersWithPossibleMove().size() > 0;
     }
 
     private void gameAction(MoveType choice, Player player) {
@@ -80,107 +97,60 @@ public class Game {
             case DOUBLE_DOWN:
                 player.addCardToHand(deck.getCard());
                 croupier.getMoneyFromPlayerIfDoubleDown(player);
-                player.setLastMove(MoveType.DOUBLE_DOWN);
-                MessagePrinter.printMessage(MessageProvider.getTellPlayerHandPointsBet, player.getHand().toString(), String.valueOf(player.countScore()), String.valueOf(player.getBetValue()));
                 break;
-            default:
         }
     }
 
-    private void getCroupierCards(){
-        while (croupier.shouldDrawCards()){
-            MessagePrinter.printMessage(MessageProvider.tellCroupierHandPoints, croupier.getHand().toString(), String.valueOf(croupier.countScore()));
-            croupier.addCardToHand(deck.getCard());
-        }
-        MessagePrinter.printMessage(MessageProvider.tellCroupierHandPoints, croupier.getHand().toString(), String.valueOf(croupier.countScore()));
+    public List<Contestant> sortContestants() {
+        List<Contestant> sortedContestants = new ArrayList<>(getSortedWinners());
+        sortedContestants.addAll(getSortedBusters());
+        return sortedContestants;
     }
 
-    private boolean anyPlayerHaveMove(){
-        boolean somePlayerHaveMove = false;
-        for (Player player: this.players){
-            if (player.getLastMove() == MoveType.HIT || player.getLastMove() == null){
-                somePlayerHaveMove = true;
+    private List<Contestant> getSortedBusters() {
+        return this.contestants.stream()
+                .filter(Contestant::checkIfBuster)
+                .sorted(Comparator.comparing(Contestant::countScore))
+                .collect(Collectors.toList());
+    }
+
+    private List<Contestant> getSortedWinners() {
+        return this.contestants.stream()
+                .filter(contestant -> !contestant.checkIfBuster())
+                .sorted(Comparator.comparing(Contestant::countScore).reversed())
+                .collect(Collectors.toList());
+    }
+
+    public void setContestantsPositions() {
+        int previousContestantScore = 0;
+        int previousContestantPosition = 0;
+        int position = 1;
+        for (Contestant contestant : this.contestants) {
+            int playerScore = contestant.countScore();
+            if (playerScore == previousContestantScore) {
+                contestant.setPosition(previousContestantPosition);
+            } else {
+                contestant.setPosition(position);
             }
-        }
-        return somePlayerHaveMove;
-    }
-
-    private void playersAuction(){
-        while (this.anyPlayerHaveMove()){
-            for (Player player: this.players){
-                if (player.getHand().size() >= 11){
-                    player.setLastMove(MoveType.STAND);
-                }
-                if (player.getLastMove() == MoveType.HIT || player.getLastMove() == null){
-                    MessagePrinter.printMessage(MessageProvider.tellPlayerHandPoints, player.getName(), player.getHand().toString(), String.valueOf(player.countScore()));
-                    MoveType choice = this.getUserChoice(player);
-                    player.setLastMove(choice);
-                    this.gameAction(choice, player);
-                }
-            }
+            previousContestantScore = playerScore;
+            previousContestantPosition = contestant.getPosition();
+            position++;
         }
     }
 
-    private List<Contestant> createContestants(){
-        List<Contestant> contestants = new ArrayList<>(this.players);
-        contestants.add(croupier);
-        return contestants;
-        }
-
-    private void sortContestantsByScores() {
-        contestants.sort(Comparator.comparing(Contestant::countScore));
+    public void setWinnersCash() {
+        this.players.stream()
+                .filter(player -> player.getPosition() == 1)
+                .forEach(player -> player.setCash(player.getCash() + this.getWinPrize()));
     }
 
-    private void getContestantsPositions(){
-        this.sortContestantsByScores();
-        int positionFirst = 1;
-        int numberOfContestants = this.contestants.size();
-        for (int i=numberOfContestants; i>0; i--){
-            int reverseIteration = i -1;
-            Contestant currentContestant = this.contestants.get(reverseIteration);
-            if (currentContestant.countScore()>21){
-                if (i==numberOfContestants){
-                    currentContestant.setPosition(i);
-                }
-                else {
-                    Contestant previousContestant = this.contestants.get(reverseIteration+1);
-                    if (currentContestant.countScore() == previousContestant.countScore()){
-                        this.contestants.get(reverseIteration).setPosition(previousContestant.getPosition());
-                    }
-                    else {currentContestant.setPosition(i);
-                    currentContestant.setBuster(true);
-                    }
-                }
-            }
-            else {
-                if (i==numberOfContestants){
-                    currentContestant.setPosition(positionFirst);
-                }
-                else {
-                    Contestant previousContestant = this.contestants.get(reverseIteration+1);
-                    if (currentContestant.countScore() == previousContestant.countScore()){
-                        this.contestants.get(reverseIteration).setPosition(positionFirst);
-                    }
-                    else {
-                        positionFirst += 1;
-                        this.contestants.get(reverseIteration).setPosition(positionFirst);
-                    }
-                }
-            }
-        }
-    }
-
-    private void sortContestantsByPosition() {
-        contestants.sort(Comparator.comparing(Contestant::getPosition));
-    }
-
-    private int getWinPrize(){
+    public int getWinPrize() {
         List<Contestant> winners = new ArrayList<>();
-        for (Contestant contestant: this.contestants){
-            if (contestant.getPosition() == 1){
+        for (Contestant contestant : this.contestants) {
+            if (contestant.getPosition() == 1) {
                 winners.add(contestant);
             }
         }
-        return this.croupier.getCasino()/winners.size();
+        return this.croupier.getCasino() / winners.size();
     }
 }

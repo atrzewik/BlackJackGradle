@@ -1,7 +1,7 @@
 package com.trzewik.blackjack.deck.enums;
 
 
-public enum  Color {
+public enum Color {
     HEART,
     DIAMOND,
     SPADE,

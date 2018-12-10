@@ -3,18 +3,17 @@ package com.trzewik.userinputprovider;
 import com.trzewik.blackjack.deck.enums.MoveType;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static com.trzewik.userinputprovider.UserInputProvider.collectString;
 
 public class UserInputMatcher {
 
-    public static MoveType collectProperMoveType(MoveType[] expectedMoveTypes, String message, String ... formats){
+    public static MoveType collectProperMoveType(MoveType[] expectedMoveTypes, String message, String... formats) {
         while (true) {
             try {
-                MoveType moveType = collectMoveType(message,formats);
+                MoveType moveType = collectMoveType(message, formats);
                 if (Arrays.asList(expectedMoveTypes).contains(moveType)) {
-                    return  moveType;
+                    return moveType;
                 }
                 throw new IllegalArgumentException();
             } catch (IllegalArgumentException e) {
@@ -23,7 +22,7 @@ public class UserInputMatcher {
         }
     }
 
-    private static MoveType collectMoveType(String message, String ... formats) {
+    private static MoveType collectMoveType(String message, String... formats) {
         while (true) {
             try {
                 String userInput = collectString(message, formats);
